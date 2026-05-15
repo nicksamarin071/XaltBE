@@ -1,0 +1,10 @@
+export const NODE_ENV = process.env.NODE_ENV;
+export const MONGO_HOST = process.env.MONGO_HOST;
+export const MONGO_PORT = process.env.MONGO_PORT;
+export const MONGO_USER = process.env.MONGO_USER;
+export const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
+export const MONGO_DB = process.env.MONGO_DB;
+export const MONGO_URI = process.env.MONGO_URI;
+export const JWT_SECRET_NAME = process.env.JWT_SECRET_NAME;
+export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
+export const AWS_REGION = process.env.AWS_REGION;
