@@ -6,15 +6,3 @@ export const getProductById = (id: string) => {
 export const deleteProductById = (id: string) =>
   productModel.findByIdAndDelete(id);
 
-// export const UpdateProductById = (id: string, values: Record<string, any>)=> 
-//   productModel.findByIdAndUpdate(id, values, { new: true });
-
-
-// export const UpdateProductById = (
-//   id: string,
-//   values: Record<string, any>
-// ) => productModel.findByIdAndUpdate(
-//   { _id: id },
-//       values,
-//       { new: true }
-//     );

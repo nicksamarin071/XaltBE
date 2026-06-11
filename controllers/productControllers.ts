@@ -19,10 +19,6 @@ const categoryFilterMap: Record<string, FiltersType> = {
   [plates]: platesFilters
 };
 
-// const normalizeKey = (key: string) => {
-//   return key.trim().toLowerCase();
-// };
-
 
 export const createProductController = async (req:Request, res: Response): Promise<any> => {
 
@@ -131,9 +127,9 @@ export const getAllProductController = async (req: Request, res: Response): Prom
 
 export const getProductByIdController = async (req:Request, res: Response): Promise<any>  => {
     try {
-     const {id} = req.params;
-     const getProductDetails = await getProductById(id as string);
-     if(!getProductDetails){
+      const productName = req.query?.productName as string;
+      const getProductDetails = await productModel.findOne({productName});
+      if(!getProductDetails){
         return resSend(res, 404, "", null);
     }
     return resSend(res, 200, "Products data fetched successfully", getProductDetails); 

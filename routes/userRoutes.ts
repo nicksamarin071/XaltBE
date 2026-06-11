@@ -1,11 +1,11 @@
 import express, { Router } from "express";
-import  { getallUserController, getSingleUserController}  from "../controllers/userControllers.js";
+import  { getallUserController, getUserByIdController}  from "../controllers/userControllers.js";
 
 const router: Router = express.Router();
 
 // Common API's
 
-router.get("/getUser", getSingleUserController)
+router.get("/getUser", getUserByIdController)
 router.get("/getAllUsers", getallUserController);
 
 

@@ -6,7 +6,7 @@ import { getALLCategoryConroller, getProductByCategoryIdController } from "../co
 import { loginValidation, registerValidation } from "../validations/userValidation.js";
 import  reqValidator from "../middlewares/request/reqValidator.js";
 import { getALLCategoryValidation, getCategoryValidation } from "../validations/categoryValidation.js";
-import { getALLProductValidation } from "../validations/productValidation.js";
+import { getALLProductValidation, getProductByIdValidation } from "../validations/productValidation.js";
 import { downloadBrochureController, sendEmailController } from "../controllers/mailControllers.js";
 
 const router: Router = express.Router();
@@ -18,7 +18,7 @@ router.get("/status/healthCheck", healthCheckC);
 router.post("/register", reqValidator(registerValidation), userRegisterController);
 router.post("/login", reqValidator(loginValidation), userLoginController);
 router.get("/getAllProducts", reqValidator(getALLProductValidation), getAllProductController);
-router.get("/getProduct/:id", getProductByIdController);
+router.get("/getProduct", reqValidator(getProductByIdValidation), getProductByIdController);
 router.get("/searchProduct", searchProductController);
 router.get("/getAllCategory",reqValidator(getALLCategoryValidation), getALLCategoryConroller);
 router.get("/getCategory",reqValidator(getCategoryValidation), getProductByCategoryIdController);

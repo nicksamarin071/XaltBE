@@ -43,9 +43,6 @@ export const userLoginController = async (req:Request, res: Response ): Promise<
     try {
 
     const { email, password } = req.body;        
-    if(!email || !password){
-        return resSend( res, 400, "Required UserName & Email & Password  !!", null);    }
-
     const user = await getUserByEmail(email);
     if (!user) {
     return resSend(res, 404, "", null);
@@ -109,7 +106,7 @@ try {
 };
 
 
-export const getSingleUserController = async (req:Request, res: Response): Promise<any>  => {
+export const getUserByIdController = async (req:Request, res: Response): Promise<any>  => {
     try {
      const id = req.session?._id;     // find  user_id within token
      if (!id) {

@@ -72,32 +72,3 @@ export const uploadMultipleDocuments = (req: Request, res: Response, next: NextF
   };
 
 
-
-
-
-
-
-
-
-
-
-  // Save only for images locally save uploads folder because now I have AWS key
-
-// const storage = multer.diskStorage({ destination: (req, file, cb ) => {
-//     cb(null, "uploads/");
-//   },filename: (req, file, cb) => {
-
-//    const uniqueName =
-//       Date.now() +
-//       "-" +
-//       file.originalname;
-
-//     cb(null, uniqueName);
-//   },
-// });
-
-// const uploadSingleDocumentConfig = multer({
-//  storage, limits: {
-//     fileSize: 1024 * 1024 * 5,
-//   },
-// }).single("image");

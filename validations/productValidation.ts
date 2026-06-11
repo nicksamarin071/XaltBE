@@ -72,3 +72,9 @@ export const getALLProductValidation = Joi.object({
   page: commonFields.page.optional(),
   perPage: commonFields.perPage.optional(),
 });
+
+
+export const getProductByIdValidation = Joi.object({
+    productName: commonFields.productName.required(), 
+
+})

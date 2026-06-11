@@ -71,12 +71,8 @@ export  const getALLCategoryConroller = async (req:Request, res: Response): Prom
 
 export const getProductByCategoryIdController = async (req: Request, res: Response): Promise<any> => {
  try {
-   const name = req.query?.name;
-   if (!name || typeof name !== "string") {
-  return resSend(res, 400, "Category name is required", null);
-}
-
-const getCategoryDetails = await categoryModel.findOne({name});
+   const name = req.query?.name as string;
+    const getCategoryDetails = await categoryModel.findOne({name});
     if(!getCategoryDetails){
      return resSend(res, 404, "", null);
     }
