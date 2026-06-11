@@ -13,8 +13,11 @@ const options = {
 const reqValidator = (validator: ObjectSchema) => {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
+      // if (["GET", "DELETE"].includes(req.method)) {
+      //   req.query = await validator.validateAsync(req.query, options);
+      
       if (["GET", "DELETE"].includes(req.method)) {
-        req.query = await validator.validateAsync(req.query, options);
+      req.validatedQuery = await validator.validateAsync(req.query,options);
       } else if (["POST", "PUT", "PATCH"].includes(req.method)) {
         req.body = await validator.validateAsync(req.body, options);
       }

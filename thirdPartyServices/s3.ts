@@ -8,14 +8,16 @@ export const uploadFileToS3 = async (
   path: string,
   filename: string,
   bufferFile: Buffer,
-  hasPublicAccess: boolean
+  contentType?: string
+  // hasPublicAccess: boolean
 ): Promise<string> => {
   try {
     // Prepare the S3 object key (path + filename)
-    const objectKey = path + "/" + filename;
+    // const objectKey = path + "/" + filename;
+    const objectKey = `${path}/${filename}`;
 
     // Set ACL (Access Control List) based on hasPublicAccess
-    const acl = hasPublicAccess ? "public-read" : "private";
+    // const acl = hasPublicAccess ? "public-read" : "private";
 
     // Upload the file to S3
     const uploadResponse = await s3Client.send(
@@ -23,7 +25,8 @@ export const uploadFileToS3 = async (
         Bucket: S3_BUCKET_NAME,
         Key: objectKey,
         Body: bufferFile,
-        ACL: acl,
+        ContentType: contentType,
+        // ACL: acl,
       })
     );
 
@@ -39,3 +42,6 @@ export const uploadFileToS3 = async (
     throw error;
   }
 };
+
+
+

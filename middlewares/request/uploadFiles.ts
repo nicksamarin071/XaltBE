@@ -5,6 +5,7 @@ import { resSend } from "../response/resSend.js";
 // Define allowed file types as a constant
 const allowedFileTypes = [
   "image/jpeg",
+  "image/jpg",
   "image/png",
   "application/pdf",
   "application/vnd.ms-excel", // for older Excel formats
@@ -13,11 +14,13 @@ const allowedFileTypes = [
 
 
 // Create a Multer instance with memory storage and file size limit
+
 const uploadSingleDocumentConfig = multer({
   storage: multer.memoryStorage() // 1MB size limit
-}).single("file"); // Use the 'single' method for a single file upload
+}).single("image"); // Use the 'single' method for a single file upload
 
 // Middleware function for file uploads
+
 export const uploadSingleDocument = (req: Request, res: Response, next: NextFunction) => {
   uploadSingleDocumentConfig(req, res, (err: any) => {
     if (err) {
@@ -36,6 +39,8 @@ export const uploadSingleDocument = (req: Request, res: Response, next: NextFunc
     next();
   });
 };
+
+
 
 export const uploadMultipleDocuments = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -65,3 +70,34 @@ export const uploadMultipleDocuments = (req: Request, res: Response, next: NextF
       next(error);
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+  // Save only for images locally save uploads folder because now I have AWS key
+
+// const storage = multer.diskStorage({ destination: (req, file, cb ) => {
+//     cb(null, "uploads/");
+//   },filename: (req, file, cb) => {
+
+//    const uniqueName =
+//       Date.now() +
+//       "-" +
+//       file.originalname;
+
+//     cb(null, uniqueName);
+//   },
+// });
+
+// const uploadSingleDocumentConfig = multer({
+//  storage, limits: {
+//     fileSize: 1024 * 1024 * 5,
+//   },
+// }).single("image");
