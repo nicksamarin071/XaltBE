@@ -1,9 +1,16 @@
 import jwt, { type VerifyErrors } from "jsonwebtoken";
+import type { SrvRecord } from "node:dns";
 
 // Interface for the payload data you want to include in the token
+// interface TokenPayload {
+//   userId: string;
+//   // Add more properties if needed
+// }
+
 interface TokenPayload {
-  userId: string;
-  // Add more properties if needed
+  _id: string;
+  email: string;
+  role: string;
 }
 
 // Function to generate a JWT token
@@ -11,6 +18,7 @@ export const generateToken = (payload: TokenPayload): string => {
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY || "", { expiresIn: (process.env.JWT_EXPIRY as any) || "1h" }); // Token expires in 1 hour
   return token;
 };
+
 
 // Function to verify a JWT token
 export const verifyToken = (token: string): Promise<TokenPayload | VerifyErrors> => {
@@ -25,3 +33,5 @@ export const verifyToken = (token: string): Promise<TokenPayload | VerifyErrors>
     });
   });
 };
+
+

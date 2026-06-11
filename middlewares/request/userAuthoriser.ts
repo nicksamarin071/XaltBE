@@ -4,7 +4,12 @@ import { verifyToken } from "../../utils/jwt.js";
 
 declare module "express-serve-static-core" {
   interface Request {
-    session?: any;
+    validatedQuery?: any;
+    session?: {
+      _id: string;
+      email: string;
+      role: string;
+    }
   }
 }
 

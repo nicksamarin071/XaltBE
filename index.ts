@@ -1,7 +1,11 @@
 // Internal Dependencies
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), ".env"),
+});
 import express, { type Application } from "express";
 import cors from "cors";
-
+import path from "path";
 
 // External Dependencies
 import allRoutes from "./routes/index.js";
@@ -26,8 +30,20 @@ app.use(cors());
 
 // Allow app to use json
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Log http requests
+
+// use only save images locally in uploads folder
+// app.use(
+//   "/uploads",
+//   express.static(
+//     path.join(process.cwd(), "uploads")
+//   )
+// );
+app.use(
+  "/public",
+  express.static(path.join(process.cwd(), "public"))
+);
 
 // Middleware to Authenticate User
 app.use(userAuthenticate);
