@@ -1,9 +1,12 @@
 // Internal Dependencies
 import dotenv from "dotenv";
-dotenv.config();
 import express, {} from "express";
 import cors from "cors";
 import path from "path";
+const __dirname = path.dirname(__filename);
+dotenv.config({
+    path: path.resolve(__dirname, ".env"),
+});
 // External Dependencies
 import allRoutes from "./routes/index.js";
 import errorHandler from "./middlewares/response/errorHandler.js";
