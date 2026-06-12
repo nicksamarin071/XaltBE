@@ -1,8 +1,6 @@
 // Internal Dependencies
 import dotenv from "dotenv";
-dotenv.config({
-    path: path.resolve(process.cwd(), ".env"),
-});
+dotenv.config();
 import express, {} from "express";
 import cors from "cors";
 import path from "path";
