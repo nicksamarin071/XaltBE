@@ -4,10 +4,7 @@ import express, { type Application } from "express";
 import cors from "cors";
 import path from "path";
 
-const __dirname = path.dirname(__filename);
-dotenv.config({
-  path: path.resolve(__dirname, ".env"),
-});
+dotenv.config()
 
 // External Dependencies
 import allRoutes from "./routes/index.js";
