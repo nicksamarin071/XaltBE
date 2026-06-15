@@ -5,10 +5,10 @@ import path from "path";
 import { fileURLToPath } from "url"; // Added to handle directory paths safely
 
 // External Dependencies
-import allRoutes from "./routes/index.js";
 import errorHandler from "./middlewares/response/errorHandler.js";
 import { logInfo } from "./utils/debug.js";
 import connectDB from "./config/mongoose.js";
+import allRoutes from "./routes/index.js";
 import { setJWTVariable } from "./config/setvariables.js";
 import { userAuthenticate } from "./middlewares/request/userAuthoriser.js";
 

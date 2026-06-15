@@ -4,10 +4,11 @@ import { logError, logInfo } from "../utils/debug.js";
 
 // MongoDB connection URI
 const mongoURI =
-  (NODE_ENV === "dev" && MONGO_HOST && MONGO_PORT)
-    ? `mongodb://${MONGO_HOST}:${MONGO_PORT}`
-    : MONGO_URI;
+(NODE_ENV === "dev" && MONGO_HOST && MONGO_PORT)
+? `mongodb://${MONGO_HOST}:${MONGO_PORT}`
+: MONGO_URI;
 
+logError(`My process .env is ${MONGO_URI}`);
 // Connect to MongoDB
 const connectDB = async () => {
   try {
