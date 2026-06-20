@@ -8,27 +8,29 @@ import cors from "cors";
 import path from "path";
 
 // External Dependencies
-import allRoutes from "./routes/index.js";
 import errorHandler from "./middlewares/response/errorHandler.js";
 import { logInfo } from "./utils/debug.js";
 import connectDB from "./config/mongoose.js";
+import allRoutes from "./routes/index.js";
 import { setJWTVariable } from "./config/setvariables.js";
-import {  userAuthenticate } from "./middlewares/request/userAuthoriser.js";
+import { userAuthenticate } from "./middlewares/request/userAuthoriser.js";
 
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
+
+dotenv.config({
+  path: path.resolve(currentDir, ".env"),
+});
 
 const app: Application = express();
-const PORT: Number = 5500;
+const PORT: number = 5500; 
 
-// Connect to Mongo DB
 await connectDB();
 
 // Add jwt variables from environment
 await setJWTVariable();
 
-// Allow cors
+//  MIDDLEWARES
 app.use(cors());
-
-// Allow app to use json
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Log http requests
