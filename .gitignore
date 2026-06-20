@@ -127,4 +127,4 @@ out
 .pnp.*
 
 
-dist/
+.dist/
