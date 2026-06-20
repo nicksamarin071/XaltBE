@@ -34,3 +34,5 @@ export  const categoryToNameMapping = {
     [barbells]:'barbells',
     [plates]:'plates'
 }
+
+

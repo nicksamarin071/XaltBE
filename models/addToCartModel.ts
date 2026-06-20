@@ -6,11 +6,11 @@ interface ICartItem {
   price: number; 
 }
 
-interface ICart extends Document {
+export interface ICart extends Document {
   user_id: mongoose.Types.ObjectId;
   items: ICartItem[];
   total_amount: number;
-};
+}
 
 const CartSchema = new Schema<ICart>(
   {
@@ -32,7 +32,6 @@ const CartSchema = new Schema<ICart>(
         quantity: {
           type: Number,
           required: true,
-          min: 1,
           default: 1,
         },
 
@@ -53,4 +52,6 @@ const CartSchema = new Schema<ICart>(
   }
 );
 
-export default mongoose.model("Cart", CartSchema);
+const Cart = mongoose.model<ICart>("Cart", CartSchema);
+
+export default Cart;

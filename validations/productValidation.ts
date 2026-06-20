@@ -10,8 +10,7 @@ const commonFields = {
     price: Joi.number(),
     image: Joi.array(),
     filters: Joi.object()
-      .pattern(Joi.string(), Joi.array().items(Joi.string()))
-     ,
+    .pattern(Joi.string(),Joi.array().items(Joi.string())),
     sku: Joi.number(),
     brands:Joi.string(),
     discount_price: Joi.number(), 
@@ -41,7 +40,6 @@ export const createProductValidation = Joi.object({
   gst_price: commonFields.gst_price.optional(),
   stock: commonFields.stock.optional(),
   is_new: commonFields.is_new.optional(),
-
 
 });
 
@@ -78,3 +76,11 @@ export const getProductByIdValidation = Joi.object({
     productName: commonFields.productName.required(), 
 
 })
+
+
+export const getFilteredProductsValidation = Joi.object({
+  category_id: commonFields.category_id.required(),
+  filters: Joi.string().required(),
+  page: commonFields.page.optional(),
+  perPage: commonFields.perPage.optional(),
+});

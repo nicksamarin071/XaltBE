@@ -7,7 +7,6 @@ import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
 import { uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
 
 
-
 export const createCategoryController = async (req:Request, res: Response): Promise<any> => {
     
 const user = req.session; 
@@ -53,8 +52,8 @@ export  const getALLCategoryConroller = async (req:Request, res: Response): Prom
        const totalData = await categoryModel.countDocuments();
        const totalPage = Math.ceil(totalData / perPage);
    
-        return resSend(res, 200, "Get All Category Successfully", {
-         category, 
+        return resSend(res, 200, "Get All Category Successfully", category, 
+       {
          totalData,
          currentPage: page,
          perPage,
@@ -69,14 +68,14 @@ export  const getALLCategoryConroller = async (req:Request, res: Response): Prom
 }
 
 
-export const getProductByCategoryIdController = async (req: Request, res: Response): Promise<any> => {
+export const getCategoryByNameController = async (req: Request, res: Response): Promise<any> => {
  try {
    const name = req.query?.name as string;
     const getCategoryDetails = await categoryModel.findOne({name});
     if(!getCategoryDetails){
      return resSend(res, 404, "", null);
     }
-    return resSend(res, 200, "Category data fetched successfully", getCategoryDetails); 
+    return resSend(res, 200, "Category data fetched successfully", [getCategoryDetails]); 
      } catch (error) {
          console.log(error);
             resSend(res, 500, "", null); 

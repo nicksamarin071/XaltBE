@@ -4,3 +4,12 @@
   const timestamp = `XA-${now.toISOString()}`;
   return `${timestamp}.${fileExtension}`;
 };
+
+
+
+export const calculateTotal = (items: any[]) => {
+  return items.reduce(
+    (sum, item) => sum + item.price,
+    0
+  );
+};

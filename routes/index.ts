@@ -5,6 +5,8 @@ import userRoutes from "./userRoutes.js";
 import productRoutes from "./productRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
 import wishlistRoutes from "./wishlistRoutes.js";
+import addToCartRoutes from "./addToCartRoutes.js";
+
 const app: Application = express();
 
 app.use("/common", commonRoutes);
@@ -12,5 +14,6 @@ app.use("/", userRoutes);      // when we used only which api then used without 
 app.use("/", productRoutes);
 app.use("/", categoryRoutes);
 app.use("/", wishlistRoutes);
+app.use("/", addToCartRoutes);
 
 export default app; 
