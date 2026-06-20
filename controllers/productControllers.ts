@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
 import {resSend} from "../middlewares/response/resSend.js";
 import productModel from "../models/productModel.js";
-import { getProductById, deleteProductById } from "../service/productService.js";
+import { deleteProductById, getFilteredProductsService, getProductsByCategoryService } from "../service/productService.js";
 import mongoose from "mongoose";
 import categoryModel from "../models/categoryModel.js";
 import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
 import { uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
 import {  newGearFilters, rigsAndRacksFilters, crossfitEquipmentFilters, barbellsFilters, platesFilters } from "../utils/filters.js";
 import {  newGear, rigsAndRacks,crossfitEquipment,barbells,plates   } from "../utils/constants.js";
+
+
 
 type FiltersType = Record<string, string[]>;
 
@@ -27,7 +29,6 @@ if (!user || user.role!== "Admin") {
 return resSend(res, 400, "Access denied. Only admin can perform this action.", null);
 };
 
-
 try {
   const {productName, category_id, description, price, status, sku, brands,
           discount_price, gst_Percentage, gst_price, stock, is_new
@@ -39,7 +40,7 @@ try {
     };
     const CheckCategory = await categoryModel.findById(category_id);
     if(!CheckCategory){
-     return resSend(res, 400, "Category Not Found", null);
+     return resSend(res, 404, "Category Not Found", null);
     };
     
 
@@ -109,8 +110,8 @@ export const getAllProductController = async (req: Request, res: Response): Prom
     const totalData = await productModel.countDocuments();
     const totalPage = Math.ceil(totalData / perPage);
 
-     return resSend(res, 200, "Get All products Successfully", {
-      products, 
+     return resSend(res, 200, "Get All products Successfully",  products, 
+     {
       totalData,
       currentPage: page,
       perPage,
@@ -125,14 +126,14 @@ export const getAllProductController = async (req: Request, res: Response): Prom
 };
 
 
-export const getProductByIdController = async (req:Request, res: Response): Promise<any>  => {
+export const getProductByNameController = async (req:Request, res: Response): Promise<any>  => {
     try {
       const productName = req.query?.productName as string;
       const getProductDetails = await productModel.findOne({productName});
       if(!getProductDetails){
         return resSend(res, 404, "", null);
     }
-    return resSend(res, 200, "Products data fetched successfully", getProductDetails); 
+    return resSend(res, 200, "Products data fetched successfully", [getProductDetails] ); 
     } catch (error) {
         console.log(error);
         resSend(res, 500, "", null); 
@@ -322,8 +323,8 @@ const filter: any = {
     const total = await productModel.countDocuments(filter);
     const totalPage = Math.ceil(total / perPageNumber);
 
-    return resSend(res, 200, "Products fetched successfully",{
-        data: products,
+    return resSend(res, 200, "Products fetched successfully", products,
+      {
         total,
         page: pageNumber,
         perPage: perPageNumber,
@@ -340,8 +341,43 @@ const filter: any = {
 };
 
 
+export const getProductByCategoryIdController = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.perPage as string) || 20;
+
+    const result = await getProductsByCategoryService(
+      req.params.category_id as string,
+      page,
+      perPage
+    );
+
+    return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
+  } catch (error: any) {
+    return resSend(res, error.code || 500, error.message, null);
+  }
+};
 
 
+export const getProductByFilterController = async (req:Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.perPage as string) || 20;
 
+    const { category_id, filters  } = req.query;
 
+    const parsedFilters = typeof filters === "string"? JSON.parse(filters): {};
+    console.log(parsedFilters, "parsedFilters");
 
+    const result = await getFilteredProductsService(category_id as string, parsedFilters, 
+      page,
+      perPage
+    );
+
+    return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
+
+  }catch (error: any) {
+    return resSend(res, error.code || 500, error.message, null);
+  }
+  
+};

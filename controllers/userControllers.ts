@@ -90,8 +90,8 @@ try {
     const totalData = await userModels.countDocuments();
     const totalPage = Math.ceil(totalData / perPage);
 
-     return resSend(res, 200, "Get All Users Successfully", {
-      users, 
+     return resSend(res, 200, "Get All Users Successfully", users,
+    { 
       totalData,
       currentPage: page,
       perPage,
@@ -118,7 +118,7 @@ export const getUserByIdController = async (req:Request, res: Response): Promise
          return resSend(res, 404, "", null);
 
     }
-    return resSend(res, 201, "User data fetched successfully", getUserDetails); 
+    return resSend(res, 201, "User data fetched successfully", [getUserDetails]); 
 
     } catch (error) {
         console.log(error);

@@ -34,7 +34,7 @@ export const createCategoryValidation = Joi.object({
 
 
 export const getCategoryValidation = Joi.object({
-  name: commonFields.name.optional(),
+  name: commonFields.name.required(),
 });
 
 export const getALLCategoryValidation = Joi.object({

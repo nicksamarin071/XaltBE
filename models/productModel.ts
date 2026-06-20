@@ -4,7 +4,7 @@ import mongoose, {Document, Schema} from "mongoose";
 export interface IProduct extends Document {
     productName: string,
     description : string,
-    category_id: string,
+    category_id: mongoose.Types.ObjectId,
     status?: string;
     image: string[];  
     sku?: number;
@@ -22,7 +22,7 @@ export interface IProduct extends Document {
 
 const productSchema = new mongoose.Schema({
     category_id: {
-      type: String,
+      type: mongoose.Types.ObjectId,
       ref: "Category", 
       required: true
     },

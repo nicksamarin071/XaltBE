@@ -34,6 +34,8 @@ const commonFields = {
 
   gender: Joi.string().valid("male", "female", "other"),
   role: Joi.string().valid("User", "Admin" ),
+   page: Joi.number(),
+   perPage: Joi.number(),
 };
 
 
@@ -64,4 +66,9 @@ export const userUpdateValidation = Joi.object({
   gender: commonFields.gender.optional(),
   role: commonFields.role.optional(),
 
+});
+
+export const getALLUserValidation = Joi.object({
+  page: commonFields.page.optional(),
+  perPage: commonFields.perPage.optional(),
 });
