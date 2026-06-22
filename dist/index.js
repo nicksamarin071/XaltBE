@@ -6,7 +6,6 @@ dotenv.config({
 import express, {} from "express";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
 // External Dependencies
 import errorHandler from "./middlewares/response/errorHandler.js";
 import { logInfo } from "./utils/debug.js";
@@ -14,10 +13,6 @@ import connectDB from "./config/mongoose.js";
 import allRoutes from "./routes/index.js";
 import { setJWTVariable } from "./config/setvariables.js";
 import { userAuthenticate } from "./middlewares/request/userAuthoriser.js";
-const currentDir = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({
-    path: path.resolve(currentDir, ".env"),
-});
 const app = express();
 const PORT = 5500;
 await connectDB();

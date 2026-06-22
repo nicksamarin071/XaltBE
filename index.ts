@@ -6,7 +6,6 @@ dotenv.config({
 import express, { type Application } from "express";
 import cors from "cors";
 import path from "path";
-import { fileURLToPath } from "url";
 
 // External Dependencies
 import errorHandler from "./middlewares/response/errorHandler.js";
@@ -16,11 +15,6 @@ import allRoutes from "./routes/index.js";
 import { setJWTVariable } from "./config/setvariables.js";
 import { userAuthenticate } from "./middlewares/request/userAuthoriser.js";
 
-const currentDir = path.dirname(fileURLToPath(import.meta.url));
-
-dotenv.config({
-  path: path.resolve(currentDir, ".env"),
-});
 
 const app: Application = express();
 const PORT: number = 5500; 
