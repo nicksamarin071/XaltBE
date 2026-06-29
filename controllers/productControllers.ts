@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import {resSend} from "../middlewares/response/resSend.js";
 import productModel from "../models/productModel.js";
-import { deleteProductById, getFilteredProductsService, getProductsByCategoryService } from "../service/productService.js";
+import { deleteProductById, getProductsByCategoryService } from "../service/productService.js";
 import mongoose from "mongoose";
 import categoryModel from "../models/categoryModel.js";
 import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
@@ -31,8 +31,8 @@ return resSend(res, 400, "Access denied. Only admin can perform this action.", n
 
 try {
   const {productName, category_id, description, price, status, sku, brands,
-          discount_price, gst_Percentage, gst_price, stock, is_new
-     } = req.body;
+          discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
+  } = req.body;
     
     const checkProduct = await productModel.findOne({productName});
     if(checkProduct){
@@ -43,9 +43,7 @@ try {
      return resSend(res, 404, "Category Not Found", null);
     };
     
-
     let filters: any = req.body.filters;
-
     const allowedFilters = categoryFilterMap[category_id];
 
     if (!allowedFilters) {
@@ -55,7 +53,7 @@ try {
 // Check filter keys
    const invalidKeys = Object.keys(filters).filter(key => !Object.keys(allowedFilters).includes(key));
 
-   if (invalidKeys.length > 0) {
+  if (invalidKeys.length > 0) {
   return resSend(res, 400, `Invalid filter keys: ${invalidKeys.join(", ")}`, null);
 }
 
@@ -75,15 +73,15 @@ try {
 }
 
 const uploadedImages = await uploadImagesToS3(req);
-    if (uploadedImages.length === 0) {
+  if (uploadedImages.length === 0) {
     return resSend(res, 400, "Image is required", null);
-    };
+  };
 
 const productData = await productModel.create({
       productName, category_id, description,      
       image: uploadedImages,
       price, status, filters, sku, brands,
-      discount_price, gst_Percentage, gst_price, stock, is_new
+      discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
 });
 
   return resSend( res, 201, 'Product Created Successfully', productData);
@@ -103,7 +101,7 @@ export const getAllProductController = async (req: Request, res: Response): Prom
     const perPage = parseInt(req.query.perPage as string) || 20;
     const skip = (page - 1) * perPage;      
     
-     const  products = await productModel.find().skip(skip).limit(perPage);
+     const  products = await productModel.find().select('category_id productName description status image price discount_price').skip(skip).limit(perPage);
      if( !products) {
      return resSend(res, 404, "", null);
      }
@@ -345,9 +343,16 @@ export const getProductByCategoryIdController = async (req: Request, res: Respon
   try {
     const page = parseInt(req.query.page as string) || 1;
     const perPage = parseInt(req.query.perPage as string) || 20;
+    
+   const categoryName = req.query.categoryName as string;
+
+   const filters = req.query.filters
+     ? JSON.parse(req.query.filters as string)
+    : {};
 
     const result = await getProductsByCategoryService(
-      req.params.category_id as string,
+      categoryName,
+      filters,
       page,
       perPage
     );
@@ -359,25 +364,4 @@ export const getProductByCategoryIdController = async (req: Request, res: Respon
 };
 
 
-export const getProductByFilterController = async (req:Request, res: Response) => {
-  try {
-    const page = parseInt(req.query.page as string) || 1;
-    const perPage = parseInt(req.query.perPage as string) || 20;
 
-    const { category_id, filters  } = req.query;
-
-    const parsedFilters = typeof filters === "string"? JSON.parse(filters): {};
-    console.log(parsedFilters, "parsedFilters");
-
-    const result = await getFilteredProductsService(category_id as string, parsedFilters, 
-      page,
-      perPage
-    );
-
-    return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
-
-  }catch (error: any) {
-    return resSend(res, error.code || 500, error.message, null);
-  }
-  
-};

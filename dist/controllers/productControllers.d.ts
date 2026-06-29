@@ -6,5 +6,4 @@ export declare const updateProductController: (req: Request, res: Response) => P
 export declare const deleteProductController: (req: Request, res: Response) => Promise<any>;
 export declare const searchProductController: (req: Request, res: Response) => Promise<any>;
 export declare const getProductByCategoryIdController: (req: Request, res: Response) => Promise<void>;
-export declare const getProductByFilterController: (req: Request, res: Response) => Promise<void>;
 //# sourceMappingURL=productControllers.d.ts.map
