@@ -5,6 +5,7 @@ export interface IProduct extends Document {
     productName: string,
     description : string,
     category_id: mongoose.Types.ObjectId,
+    service: string,
     status?: string;
     image: string[];  
     sku?: number;
@@ -17,6 +18,8 @@ export interface IProduct extends Document {
     stock: number;
     is_new: boolean;
     filters: object;
+    logo_name: string;
+    weight: string;
 
 }
 
@@ -37,6 +40,11 @@ const productSchema = new mongoose.Schema({
         required: true,
 
     },
+    
+    service: {
+       type: String,
+    },
+
     status : {
       type: String,
       enum: ["active", "inactive"],
@@ -80,6 +88,14 @@ const productSchema = new mongoose.Schema({
 
     filters: {
      type: Object
+    },
+
+    logo_name:{
+     type: String,
+    },
+
+    weight :{
+     type: String,
     },
 
     is_new: {

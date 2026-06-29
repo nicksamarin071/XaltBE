@@ -14,6 +14,9 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    service: {
+        type: String,
+    },
     status: {
         type: String,
         enum: ["active", "inactive"],
@@ -48,6 +51,12 @@ const productSchema = new mongoose.Schema({
     },
     filters: {
         type: Object
+    },
+    logo_name: {
+        type: String,
+    },
+    weight: {
+        type: String,
     },
     is_new: {
         type: Boolean,

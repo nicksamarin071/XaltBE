@@ -3,6 +3,7 @@ export interface IProduct extends Document {
     productName: string;
     description: string;
     category_id: mongoose.Types.ObjectId;
+    service: string;
     status?: string;
     image: string[];
     sku?: number;
@@ -14,6 +15,8 @@ export interface IProduct extends Document {
     stock: number;
     is_new: boolean;
     filters: object;
+    logo_name: string;
+    weight: string;
 }
 declare const _default: mongoose.Model<IProduct, {}, {}, {}, mongoose.Document<unknown, {}, IProduct, {}, mongoose.DefaultSchemaOptions> & IProduct & Required<{
     _id: mongoose.Types.ObjectId;

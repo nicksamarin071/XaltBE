@@ -1,6 +1,6 @@
 import { resSend } from "../middlewares/response/resSend.js";
 import productModel from "../models/productModel.js";
-import { deleteProductById, getFilteredProductsService, getProductsByCategoryService } from "../service/productService.js";
+import { deleteProductById, getProductsByCategoryService } from "../service/productService.js";
 import mongoose from "mongoose";
 import categoryModel from "../models/categoryModel.js";
 import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
@@ -21,7 +21,7 @@ export const createProductController = async (req, res) => {
     }
     ;
     try {
-        const { productName, category_id, description, price, status, sku, brands, discount_price, gst_Percentage, gst_price, stock, is_new } = req.body;
+        const { productName, category_id, description, price, status, sku, brands, discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight } = req.body;
         const checkProduct = await productModel.findOne({ productName });
         if (checkProduct) {
             return resSend(res, 400, "Product already Exit!! Please Change ProductName", null);
@@ -61,7 +61,7 @@ export const createProductController = async (req, res) => {
             productName, category_id, description,
             image: uploadedImages,
             price, status, filters, sku, brands,
-            discount_price, gst_Percentage, gst_price, stock, is_new
+            discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
         });
         return resSend(res, 201, 'Product Created Successfully', productData);
     }
@@ -75,7 +75,7 @@ export const getAllProductController = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = parseInt(req.query.perPage) || 20;
         const skip = (page - 1) * perPage;
-        const products = await productModel.find().skip(skip).limit(perPage);
+        const products = await productModel.find().select('category_id productName description status image price discount_price').skip(skip).limit(perPage);
         if (!products) {
             return resSend(res, 404, "", null);
         }
@@ -269,21 +269,11 @@ export const getProductByCategoryIdController = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const perPage = parseInt(req.query.perPage) || 20;
-        const result = await getProductsByCategoryService(req.params.category_id, page, perPage);
-        return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
-    }
-    catch (error) {
-        return resSend(res, error.code || 500, error.message, null);
-    }
-};
-export const getProductByFilterController = async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const perPage = parseInt(req.query.perPage) || 20;
-        const { category_id, filters } = req.query;
-        const parsedFilters = typeof filters === "string" ? JSON.parse(filters) : {};
-        console.log(parsedFilters, "parsedFilters");
-        const result = await getFilteredProductsService(category_id, parsedFilters, page, perPage);
+        const categoryName = req.query.categoryName;
+        const filters = req.query.filters
+            ? JSON.parse(req.query.filters)
+            : {};
+        const result = await getProductsByCategoryService(categoryName, filters, page, perPage);
         return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
     }
     catch (error) {

@@ -16,4 +16,6 @@ export const sendEmail = async (to, subject, html) => {
     });
     return info;
 };
+export const sendEmailExprt = async (user_id) => {
+};
 //# sourceMappingURL=mailService.js.map

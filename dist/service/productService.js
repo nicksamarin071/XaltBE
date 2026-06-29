@@ -14,75 +14,49 @@ export const getProductById = (id) => {
     return productModel.findById(id);
 };
 export const deleteProductById = (id) => productModel.findByIdAndDelete(id);
-export const getProductsByCategoryService = async (category_id, page, perPage) => {
-    if (!mongoose.Types.ObjectId.isValid(category_id)) {
-        throw {
-            code: 400,
-            message: "Invalid or missing category_id",
-        };
-    }
-    const category = await categoryModel.findById(category_id);
+export const getProductsByCategoryService = async (categoryName, filters, page, perPage) => {
+    // Find category by name
+    const category = await categoryModel.findOne({ name: { $regex: `^${categoryName}$`, $options: "i", },
+    });
     if (!category) {
         throw { code: 404, message: "Category Not Found", };
     }
-    const skip = (page - 1) * perPage;
-    const [products, totalProducts] = await Promise.all([
-        productModel
-            .find({ category_id })
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(perPage),
-        productModel.countDocuments({ category_id }),
-    ]);
-    if (!products.length) {
+    const categoryId = category._id.toString();
+    // Get category filters
+    const availableFilters = categoryFilterMap[categoryId];
+    if (!availableFilters) {
         throw {
-            code: 404,
-            message: "No products found for this category",
+            code: 400,
+            message: "No filters configured for this category",
         };
     }
-    return {
-        products,
-        pagination: {
-            page,
-            perPage,
-            totalProducts,
-            totalPages: Math.ceil(totalProducts / perPage),
-        },
-    };
-};
-export const getFilteredProductsService = async (categoryId, filters, page, perPage) => {
-    // category validation
-    const categoryFilters = categoryFilterMap[categoryId];
-    if (!categoryFilters) {
-        throw { code: 400, message: "Invalid category", };
-    }
-    // validate filters
+    // Validate filters
     for (const [filterKey, values] of Object.entries(filters)) {
-        const allowedValues = categoryFilters[filterKey];
+        const allowedValues = availableFilters[filterKey];
         if (!allowedValues) {
             throw {
                 code: 400,
                 message: `${filterKey} filter is not allowed for this category`,
             };
         }
-        const invalidValues = values.filter((value) => !allowedValues.includes(value));
+        const invalidValues = values.filter(value => !allowedValues.includes(value));
         if (invalidValues.length) {
             throw {
-                message: `Invalid values for ${filterKey}: ${invalidValues.join(", ")}`,
-                code: 400
+                code: 400,
+                message: `Invalid values for ${filterKey}: ${invalidValues.join(", ")}`
             };
         }
     }
-    // build mongo query
+    // Build query
     const query = {
-        category_id: categoryId
+        category_id: category._id,
     };
     const filterConditions = [];
     for (const [key, values] of Object.entries(filters)) {
         filterConditions.push({
             [`filters.${key}`]: {
-                $in: values
-            }
+                $in: values,
+            },
         });
     }
     if (filterConditions.length) {
@@ -92,6 +66,7 @@ export const getFilteredProductsService = async (categoryId, filters, page, perP
     const [products, totalProducts] = await Promise.all([
         productModel
             .find(query)
+            .select("category_id productName description status image price discount_price")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(perPage),
@@ -100,10 +75,11 @@ export const getFilteredProductsService = async (categoryId, filters, page, perP
     if (!products.length) {
         throw {
             code: 404,
-            message: "No products found for this query",
+            message: "No products found for this category",
         };
     }
     return {
+        filters: availableFilters,
         products,
         pagination: {
             page,
