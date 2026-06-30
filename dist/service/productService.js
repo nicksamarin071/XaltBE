@@ -23,7 +23,7 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
     }
     const categoryId = category._id.toString();
     // Get category filters
-    const availableFilters = categoryFilterMap[categoryId];
+    const availableFilters = categoryFilterMap[categoryId] || {};
     if (!availableFilters) {
         throw {
             code: 400,
@@ -78,18 +78,12 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
     const [products, totalProducts] = await Promise.all([
         productModel
             .find(query)
-            .select("category_id productName description status image price discount_price filters")
+            .select("category_id productName description status image price discount_price")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(perPage),
         productModel.countDocuments(query),
     ]);
-    if (!products.length) {
-        throw {
-            code: 404,
-            message: "No products found for this category",
-        };
-    }
     return {
         filters: availableFilters,
         products,

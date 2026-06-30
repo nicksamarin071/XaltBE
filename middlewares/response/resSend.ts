@@ -1,7 +1,8 @@
 import type { Response } from "express";
 import message from "./msgs.js";
 
-export const resSend = (res: Response, code: number, msg: string, data: any, meta?: any): void => {
+export const resSend = (res: Response, code: number, msg: string, data: any, meta?: any,  extra?: any
+): void => {
   try {
     const result: any = {};
     const n_code: number = code ? code : 455;
@@ -9,9 +10,13 @@ export const resSend = (res: Response, code: number, msg: string, data: any, met
     result.success = m ? m.status : n_code;
     result.message = msg ? msg : (m ? m.message : "Unknown Error");
     result.data = data;
+     if (extra) {
+      Object.assign(result, extra);
+    }
     if (meta) {
       result.pagination = meta;
     }
+   
     res.status(m ? m.httpCode : 280).send(result);
   } catch (error: unknown) {
     res.status(406).send({

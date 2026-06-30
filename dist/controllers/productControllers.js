@@ -281,7 +281,14 @@ export const getProductByCategoryIdController = async (req, res) => {
             }
         }
         const result = await getProductsByCategoryService(categoryName, filters, page, perPage);
-        return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
+        if (result.products.length === 0) {
+            return resSend(res, 200, "Products fetched successfully", [], result.pagination, {
+                filters: result.filters
+            });
+        }
+        return resSend(res, 200, "Products fetched successfully", result.products, result.pagination, {
+            filters: result.filters
+        });
     }
     catch (error) {
         return resSend(res, error.code || 500, error.message, null);
