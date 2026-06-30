@@ -76,10 +76,8 @@ export const UpdateproductValidation = Joi.object({
 export const getALLProductValidation = Joi.object({
   page: commonFields.page.optional(),
   perPage: commonFields.perPage.optional(),
-  categoryName : commonFields.categoryName.required(),
-  filters: Joi.string().optional(),
-
-});
+  categoryName: commonFields.categoryName.required(),
+}).unknown(true);
 
 
 export const getProductByIdValidation = Joi.object({

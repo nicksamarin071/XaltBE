@@ -270,9 +270,16 @@ export const getProductByCategoryIdController = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = parseInt(req.query.perPage) || 20;
         const categoryName = req.query.categoryName;
-        const filters = req.query.filters
-            ? JSON.parse(req.query.filters)
-            : {};
+        const { page: _, perPage: __, categoryName: ___, ...queryFilters } = req.query;
+        const filters = {};
+        for (const [key, value] of Object.entries(queryFilters)) {
+            if (Array.isArray(value)) {
+                filters[key] = value.map(v => String(v).trim());
+            }
+            else if (typeof value === "string") {
+                filters[key] = value.split(",").map(v => v.trim());
+            }
+        }
         const result = await getProductsByCategoryService(categoryName, filters, page, perPage);
         return resSend(res, 200, "Products fetched successfully", result.products, result.pagination);
     }

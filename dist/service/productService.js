@@ -39,7 +39,9 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
                 message: `${filterKey} filter is not allowed for this category`,
             };
         }
-        const invalidValues = values.filter(value => !allowedValues.includes(value));
+        const invalidValues = values.filter(value => {
+            return !allowedValues.some(allowed => allowed.toLowerCase().trim() === value.toLowerCase().trim());
+        });
         if (invalidValues.length) {
             throw {
                 code: 400,
@@ -52,11 +54,21 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
         category_id: category._id,
     };
     const filterConditions = [];
+    // for (const [key, values] of Object.entries(filters)) {
+    //   filterConditions.push({
+    //     [`filters.${key}`]: {
+    //       $in: values,
+    //     },
+    //   });
+    // }
     for (const [key, values] of Object.entries(filters)) {
         filterConditions.push({
-            [`filters.${key}`]: {
-                $in: values,
-            },
+            $or: values.map(value => ({
+                [`filters.${key}`]: {
+                    $regex: `^${value}$`,
+                    $options: "i",
+                },
+            })),
         });
     }
     if (filterConditions.length) {
@@ -66,7 +78,7 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
     const [products, totalProducts] = await Promise.all([
         productModel
             .find(query)
-            .select("category_id productName description status image price discount_price")
+            .select("category_id productName description status image price discount_price filters")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(perPage),
@@ -89,9 +101,4 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
         },
     };
 };
-// Service
-//  ├─ Validation
-//  ├─ Database
-//  ├─ Business Logic
-//  └─ Return Data
 //# sourceMappingURL=productService.js.map

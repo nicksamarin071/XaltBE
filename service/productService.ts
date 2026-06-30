@@ -27,7 +27,7 @@ export const deleteProductById = (id: string) =>
 
 export const getProductsByCategoryService = async (categoryName: string, filters: Record<string, string[]>, page: number, perPage: number
 ) => {
-
+  
   // Find category by name
   const category = await categoryModel.findOne({name: { $regex: `^${categoryName}$`,$options: "i",},
   });
@@ -41,18 +41,19 @@ export const getProductsByCategoryService = async (categoryName: string, filters
   // Get category filters
   const availableFilters = categoryFilterMap[categoryId];
 
+
   if (!availableFilters) {
     throw {
       code: 400,
       message: "No filters configured for this category",
     };
   }
-
+  
+  
   // Validate filters
   for (const [filterKey, values] of Object.entries(filters)) {
-
+    
     const allowedValues = availableFilters[filterKey];
-
     if (!allowedValues) {
       throw {
         code: 400,
@@ -60,9 +61,12 @@ export const getProductsByCategoryService = async (categoryName: string, filters
       };
     }
 
-    const invalidValues = values.filter(
-      value => !allowedValues.includes(value)
-    );
+   const invalidValues = values.filter(value => {
+  return !allowedValues.some(
+    allowed =>
+      allowed.toLowerCase().trim() === value.toLowerCase().trim()
+  );
+});
 
     if (invalidValues.length) {
       throw {
@@ -79,13 +83,25 @@ export const getProductsByCategoryService = async (categoryName: string, filters
 
   const filterConditions = [];
 
+  // for (const [key, values] of Object.entries(filters)) {
+  //   filterConditions.push({
+  //     [`filters.${key}`]: {
+  //       $in: values,
+  //     },
+  //   });
+  // }
+
   for (const [key, values] of Object.entries(filters)) {
-    filterConditions.push({
+  filterConditions.push({
+    $or: values.map(value => ({
       [`filters.${key}`]: {
-        $in: values,
+        $regex: `^${value}$`,
+        $options: "i",
       },
-    });
+    })),
+   });
   }
+
 
   if (filterConditions.length) {
     query.$and = filterConditions;
@@ -97,7 +113,7 @@ export const getProductsByCategoryService = async (categoryName: string, filters
     productModel
       .find(query)
       .select(
-        "category_id productName description status image price discount_price"
+        "category_id productName description status image price discount_price filters"
       )
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -125,11 +141,3 @@ export const getProductsByCategoryService = async (categoryName: string, filters
   };
 };
 
-
-
-
-// Service
-//  ├─ Validation
-//  ├─ Database
-//  ├─ Business Logic
-//  └─ Return Data
