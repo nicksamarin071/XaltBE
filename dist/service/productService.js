@@ -78,7 +78,7 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
     const [products, totalProducts] = await Promise.all([
         productModel
             .find(query)
-            .select("category_id productName description status image price discount_price filters")
+            .select("category_id productName description status image price discount_price")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(perPage),

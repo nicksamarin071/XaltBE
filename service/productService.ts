@@ -113,7 +113,7 @@ export const getProductsByCategoryService = async (categoryName: string, filters
     productModel
       .find(query)
       .select(
-        "category_id productName description status image price discount_price filters"
+        "category_id productName description status image price discount_price"
       )
       .sort({ createdAt: -1 })
       .skip(skip)
