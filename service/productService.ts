@@ -39,8 +39,7 @@ export const getProductsByCategoryService = async (categoryName: string, filters
   const categoryId = category._id.toString();
 
   // Get category filters
-  const availableFilters = categoryFilterMap[categoryId];
-
+  const availableFilters = categoryFilterMap[categoryId] || {};
 
   if (!availableFilters) {
     throw {
@@ -122,12 +121,6 @@ export const getProductsByCategoryService = async (categoryName: string, filters
     productModel.countDocuments(query),
   ]);
 
-   if (!products.length) {
-    throw {
-      code: 404,
-      message: "No products found for this category",
-    };
-  }
 
   return {
     filters: availableFilters,

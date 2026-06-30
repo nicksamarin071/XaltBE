@@ -28,7 +28,7 @@ declare const _default: mongoose.Model<ICart, {}, {}, {
 }, "id"> & {
     id: string;
 }, {
-    _id?: mongoose.SchemaDefinitionProperty<mongoose.Types.ObjectId, ICart, mongoose.Document<unknown, {}, ICart, {
+    user_id?: mongoose.SchemaDefinitionProperty<mongoose.Types.ObjectId, ICart, mongoose.Document<unknown, {}, ICart, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<ICart & Required<{
         _id: mongoose.Types.ObjectId;
@@ -37,7 +37,7 @@ declare const _default: mongoose.Model<ICart, {}, {}, {
     }, "id"> & {
         id: string;
     }>;
-    user_id?: mongoose.SchemaDefinitionProperty<mongoose.Types.ObjectId, ICart, mongoose.Document<unknown, {}, ICart, {
+    _id?: mongoose.SchemaDefinitionProperty<mongoose.Types.ObjectId, ICart, mongoose.Document<unknown, {}, ICart, {
         id: string;
     }, mongoose.DefaultSchemaOptions> & Omit<ICart & Required<{
         _id: mongoose.Types.ObjectId;

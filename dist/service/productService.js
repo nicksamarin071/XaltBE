@@ -23,7 +23,7 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
     }
     const categoryId = category._id.toString();
     // Get category filters
-    const availableFilters = categoryFilterMap[categoryId];
+    const availableFilters = categoryFilterMap[categoryId] || {};
     if (!availableFilters) {
         throw {
             code: 400,
@@ -84,12 +84,6 @@ export const getProductsByCategoryService = async (categoryName, filters, page, 
             .limit(perPage),
         productModel.countDocuments(query),
     ]);
-    if (!products.length) {
-        throw {
-            code: 404,
-            message: "No products found for this category",
-        };
-    }
     return {
         filters: availableFilters,
         products,

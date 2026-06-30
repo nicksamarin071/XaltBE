@@ -1,5 +1,5 @@
 import message from "./msgs.js";
-export const resSend = (res, code, msg, data, meta) => {
+export const resSend = (res, code, msg, data, meta, extra) => {
     try {
         const result = {};
         const n_code = code ? code : 455;
@@ -7,6 +7,9 @@ export const resSend = (res, code, msg, data, meta) => {
         result.success = m ? m.status : n_code;
         result.message = msg ? msg : (m ? m.message : "Unknown Error");
         result.data = data;
+        if (extra) {
+            Object.assign(result, extra);
+        }
         if (meta) {
             result.pagination = meta;
         }

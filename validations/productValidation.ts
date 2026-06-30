@@ -72,8 +72,12 @@ export const UpdateproductValidation = Joi.object({
 
 });
 
-
 export const getALLProductValidation = Joi.object({
+  page: commonFields.page.optional(),
+  perPage: commonFields.perPage.optional(),
+});
+
+export const getFilterProductByCategoryValidation = Joi.object({
   page: commonFields.page.optional(),
   perPage: commonFields.perPage.optional(),
   categoryName: commonFields.categoryName.required(),
