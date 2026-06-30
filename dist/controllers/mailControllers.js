@@ -3,7 +3,6 @@ import { EMAIL_USER } from "../utils/constants.js";
 // import  PDFDocument from "pdfkit";
 import path from "path";
 import { resSend } from "../middlewares/response/resSend.js";
-import productModel from "../models/productModel.js";
 export const sendEmailController = async (req, res) => {
     try {
         const { email } = req.body;

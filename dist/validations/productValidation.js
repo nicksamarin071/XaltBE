@@ -66,8 +66,7 @@ export const getALLProductValidation = Joi.object({
     page: commonFields.page.optional(),
     perPage: commonFields.perPage.optional(),
     categoryName: commonFields.categoryName.required(),
-    filters: Joi.string().optional(),
-});
+}).unknown(true);
 export const getProductByIdValidation = Joi.object({
     productName: commonFields.productName.required(),
 });

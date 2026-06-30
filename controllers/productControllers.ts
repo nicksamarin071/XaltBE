@@ -346,9 +346,17 @@ export const getProductByCategoryIdController = async (req: Request, res: Respon
     
    const categoryName = req.query.categoryName as string;
 
-   const filters = req.query.filters
-     ? JSON.parse(req.query.filters as string)
-    : {};
+  const { page: _, perPage: __, categoryName: ___, ...queryFilters } = req.query;
+
+    const filters: Record<string, string[]> = {};
+
+    for (const [key, value] of Object.entries(queryFilters)) {
+      if (Array.isArray(value)) {
+        filters[key] = value.map(v => String(v).trim());
+      } else if (typeof value === "string") {
+        filters[key] = value.split(",").map(v => v.trim());
+      }
+    }
 
     const result = await getProductsByCategoryService(
       categoryName,
