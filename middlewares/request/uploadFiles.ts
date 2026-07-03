@@ -14,10 +14,13 @@ const allowedFileTypes = [
 
 
 // Create a Multer instance with memory storage and file size limit
+export const uploadSingleDocumentConfig = multer({
+  storage: multer.memoryStorage(),
+}).fields([
+  { name: "image", maxCount: 20 },
+  { name: "feature_image", maxCount: 1 },
+]);
 
-const uploadSingleDocumentConfig = multer({
-  storage: multer.memoryStorage() // 1MB size limit
-}).single("image"); // Use the 'single' method for a single file upload
 
 // Middleware function for file uploads
 

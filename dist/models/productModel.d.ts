@@ -15,6 +15,7 @@ export interface IProduct extends Document {
     stock: number;
     is_new: boolean;
     filters: object;
+    feature_image: string;
     logo_name: string;
     weight: string;
 }

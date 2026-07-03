@@ -10,9 +10,12 @@ const allowedFileTypes = [
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // for newer Excel formats (xlsx)
 ];
 // Create a Multer instance with memory storage and file size limit
-const uploadSingleDocumentConfig = multer({
-    storage: multer.memoryStorage() // 1MB size limit
-}).single("image"); // Use the 'single' method for a single file upload
+export const uploadSingleDocumentConfig = multer({
+    storage: multer.memoryStorage(),
+}).fields([
+    { name: "image", maxCount: 20 },
+    { name: "feature_image", maxCount: 1 },
+]);
 // Middleware function for file uploads
 export const uploadSingleDocument = (req, res, next) => {
     uploadSingleDocumentConfig(req, res, (err) => {

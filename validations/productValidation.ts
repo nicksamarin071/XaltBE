@@ -21,6 +21,7 @@ const commonFields = {
     is_new: Joi.boolean(),
     service: Joi.string(),
     logo_name: Joi.string(),
+    feature_image: Joi.string(),
     weight: Joi.string(),
     page: Joi.number(),
     perPage: Joi.number(),
@@ -47,7 +48,7 @@ export const createProductValidation = Joi.object({
   service: commonFields.service.optional(),
   weight: commonFields.weight.optional(),
   logo_name: commonFields.logo_name.optional(),
-
+  feature_image: commonFields.feature_image.optional(),
 });
 
 
@@ -69,6 +70,7 @@ export const UpdateproductValidation = Joi.object({
   gst_price: commonFields.gst_price.optional(),
   stock: commonFields.stock.optional(),
   is_new: commonFields.is_new.optional(),
+  feature_image: commonFields.feature_image.optional(),
 
 });
 

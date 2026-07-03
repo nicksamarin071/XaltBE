@@ -3,7 +3,6 @@ import { getallUserController, getUserByIdController } from "../controllers/user
 import reqValidator from "../middlewares/request/reqValidator.js";
 import { getALLUserValidation } from "../validations/userValidation.js";
 const router = express.Router();
-// Common API's
 router.get("/getUser", getUserByIdController);
 router.get("/getAllUsers", reqValidator(getALLUserValidation), getallUserController);
 export default router;

@@ -5,7 +5,6 @@ import { getALLUserValidation } from "../validations/userValidation.js";
 
 const router: Router = express.Router();
 
-// Common API's
 
 router.get("/getUser", getUserByIdController)
 router.get("/getAllUsers", reqValidator(getALLUserValidation), getallUserController);

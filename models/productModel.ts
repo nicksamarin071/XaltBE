@@ -18,6 +18,7 @@ export interface IProduct extends Document {
     stock: number;
     is_new: boolean;
     filters: object;
+    feature_image: string;
     logo_name: string;
     weight: string;
 
@@ -40,7 +41,7 @@ const productSchema = new mongoose.Schema({
         required: true,
 
     },
-    
+
     service: {
        type: String,
     },
@@ -88,6 +89,10 @@ const productSchema = new mongoose.Schema({
 
     filters: {
      type: Object
+    },
+
+    feature_image: {
+     type: String,
     },
 
     logo_name:{

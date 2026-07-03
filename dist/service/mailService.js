@@ -16,6 +16,13 @@ export const sendEmail = async (to, subject, html) => {
     });
     return info;
 };
-export const sendEmailExprt = async (user_id) => {
+export const sendEmailExprt = async (user_id, to, subject, html) => {
+    const info = await transporter.sendMail({
+        from: EMAIL_USER,
+        to,
+        subject,
+        html,
+    });
+    return info;
 };
 //# sourceMappingURL=mailService.js.map

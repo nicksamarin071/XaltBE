@@ -4,7 +4,7 @@ import { deleteProductById, getProductsByCategoryService } from "../service/prod
 import mongoose from "mongoose";
 import categoryModel from "../models/categoryModel.js";
 import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
-import { uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
+import { uploadFeatureImageToS3, uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
 import { newGearFilters, rigsAndRacksFilters, crossfitEquipmentFilters, barbellsFilters, platesFilters } from "../utils/filters.js";
 import { newGear, rigsAndRacks, crossfitEquipment, barbells, plates } from "../utils/constants.js";
 const categoryFilterMap = {
@@ -57,10 +57,11 @@ export const createProductController = async (req, res) => {
             return resSend(res, 400, "Image is required", null);
         }
         ;
+        const featureImage = await uploadFeatureImageToS3(req);
         const productData = await productModel.create({
             productName, category_id, description,
             image: uploadedImages,
-            price, status, filters, sku, brands,
+            price, status, filters, sku, brands, feature_image: featureImage,
             discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
         });
         return resSend(res, 201, 'Product Created Successfully', productData);
@@ -129,17 +130,17 @@ export const updateProductController = async (req, res) => {
             return resSend(res, 404, "Product not found", null);
         }
         const uploadedImages = await uploadImagesToS3(req);
+        const featureImageUrl = await uploadFeatureImageToS3(req);
         let imageUrls = product.image;
-        // If new images uploaded
+        let featureImageUrls = product.feature_image;
+        // If new images uploaded then Delete old images from AWS
         if (uploadedImages.length > 0) {
-            // Delete old images from AWS
-            if (product.image?.length > 0) {
-                for (const image of product.image) {
-                    await deleteimageFromS3(image);
-                }
-            }
-            // Set new images
+            await deleteimageFromS3(product.image);
             imageUrls = uploadedImages;
+        }
+        if (featureImageUrl) {
+            await deleteimageFromS3(product.feature_image);
+            featureImageUrls = featureImageUrl;
         }
         const { productName, description, price, status, filters, sku, brands, discount_price, gst_Percentage, gst_price, stock, is_new } = req.body;
         const checkProduct = await productModel.findOne({ productName });
@@ -152,7 +153,7 @@ export const updateProductController = async (req, res) => {
             description,
             status,
             image: imageUrls,
-            price, filters, sku, brands,
+            price, filters, sku, brands, feature_image: featureImageUrls,
             discount_price, gst_Percentage, gst_price, stock, is_new
         };
         // Remove undefined fields
@@ -194,6 +195,9 @@ export const deleteProductController = async (req, res) => {
         // Delete all product images from S3
         if (product.image) {
             await deleteimageFromS3(product.image);
+        }
+        if (product.feature_image) {
+            await deleteimageFromS3(product.feature_image);
         }
         const deletedProduct = await deleteProductById(id);
         if (!deletedProduct) {

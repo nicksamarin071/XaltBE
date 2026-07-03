@@ -48,3 +48,4 @@ export const deleteimageFromS3 = async (
     console.log("S3 delete error:", error);
   }
 };
+

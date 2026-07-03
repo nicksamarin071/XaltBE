@@ -52,6 +52,9 @@ const productSchema = new mongoose.Schema({
     filters: {
         type: Object
     },
+    feature_image: {
+        type: String,
+    },
     logo_name: {
         type: String,
     },
