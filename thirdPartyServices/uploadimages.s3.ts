@@ -12,14 +12,19 @@ export const uploadImagesToS3 = async (req: Request): Promise<string[]> => {
     ? [req.file]
     : [];
 
-   if (files.length === 0) {
+
+  const imageFiles = files.filter(
+    file => file.fieldname === "image"
+  );
+
+   if (imageFiles.length === 0) {
       return [];
     }
 
   // Upload images
   const uploadedImages: string[] = [];
 
-  for (const file of files) {
+  for (const file of imageFiles) {
 
     const imageUrl = await uploadFileToS3(
       AWS_S3_FOLDER as string,
@@ -32,4 +37,27 @@ export const uploadImagesToS3 = async (req: Request): Promise<string[]> => {
   }
 
   return uploadedImages;
+};
+
+
+export const uploadFeatureImageToS3 = async (
+  req: Request
+): Promise<string> => {
+
+  const files = req.files as Express.Multer.File[];
+
+  const featureFile = files.find(
+    file => file.fieldname === "feature_image"
+  );
+
+  if (!featureFile) {
+    return "";
+  }
+
+  return await uploadFileToS3(
+    AWS_S3_FOLDER as string,
+    `${Date.now()}-${featureFile.originalname}`,
+    featureFile.buffer,
+    featureFile.mimetype
+  );
 };

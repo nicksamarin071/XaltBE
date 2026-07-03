@@ -5,7 +5,7 @@ import { deleteProductById, getProductsByCategoryService } from "../service/prod
 import mongoose from "mongoose";
 import categoryModel from "../models/categoryModel.js";
 import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
-import { uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
+import { uploadFeatureImageToS3, uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
 import {  newGearFilters, rigsAndRacksFilters, crossfitEquipmentFilters, barbellsFilters, platesFilters } from "../utils/filters.js";
 import {  newGear, rigsAndRacks,crossfitEquipment,barbells,plates   } from "../utils/constants.js";
 
@@ -55,7 +55,7 @@ try {
 
   if (invalidKeys.length > 0) {
   return resSend(res, 400, `Invalid filter keys: ${invalidKeys.join(", ")}`, null);
-}
+   }
 
 // Check filter values
   for (const [key, values] of Object.entries(filters)) {
@@ -76,11 +76,12 @@ const uploadedImages = await uploadImagesToS3(req);
   if (uploadedImages.length === 0) {
     return resSend(res, 400, "Image is required", null);
   };
+const featureImage = await uploadFeatureImageToS3(req);
 
 const productData = await productModel.create({
       productName, category_id, description,      
       image: uploadedImages,
-      price, status, filters, sku, brands,
+      price, status, filters, sku, brands, feature_image: featureImage,
       discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
 });
 
@@ -162,37 +163,35 @@ try {
       return resSend(res, 404, "Product not found", null);
     }
     const uploadedImages = await uploadImagesToS3(req);
-
+    const featureImageUrl = await uploadFeatureImageToS3(req);
     let imageUrls = product.image;
+    let featureImageUrls = product.feature_image;
 
-    // If new images uploaded
+    // If new images uploaded then Delete old images from AWS
+
     if (uploadedImages.length > 0) {
-
-      // Delete old images from AWS
-      if (product.image?.length > 0) {
-
-        for (const image of product.image) {
-          await deleteimageFromS3(image);
-        }
-      }
-
-      // Set new images
-      imageUrls = uploadedImages;
+    await deleteimageFromS3(product.image);
+    imageUrls = uploadedImages;
     }
 
-    const {productName, description, price, status, filters, sku, brands,
+    if (featureImageUrl) {
+    await deleteimageFromS3(product.feature_image);
+    featureImageUrls = featureImageUrl;
+    }
+
+    const {productName, description, price, status, filters, sku, brands, 
           discount_price, gst_Percentage, gst_price, stock, is_new} = req.body;
           
     const checkProduct = await productModel.findOne({productName});
     if(checkProduct){
-           return resSend(res, 400, "Product already Exit!! Please Change ProductName", null);
+      return resSend(res, 400, "Product already Exit!! Please Change ProductName", null);
     };
     const updateData = {
       productName,
       description,
-      status,
+      status, 
       image: imageUrls,
-      price, filters, sku, brands,
+      price, filters, sku, brands, feature_image: featureImageUrls,
       discount_price, gst_Percentage, gst_price, stock, is_new
     };
 
@@ -201,7 +200,7 @@ try {
       if (updateData[key as keyof typeof updateData] === undefined) {
         delete updateData[key as keyof typeof updateData];
       }
-    });
+    }); 
 
     // const updateProduct = await productModel.findByIdAndUpdate(id as string, updateData, {new: true});
     const updateProduct = await productModel.findOneAndUpdate({ _id: id }, updateData,{ returnDocument: "after" }); //same behavior, but using the newer MongoDB driver terminology
@@ -242,6 +241,10 @@ return resSend(res, 400, "Access denied. Only admin can perform this action.", n
     // Delete all product images from S3
       if (product.image) {
       await deleteimageFromS3(product.image);
+    }
+
+     if (product.feature_image) {
+      await deleteimageFromS3(product.feature_image);
     }
 
     const deletedProduct = await deleteProductById(id as string);

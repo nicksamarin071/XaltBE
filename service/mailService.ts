@@ -25,6 +25,21 @@ export const sendEmail = async (
   return info;
 };
 
- export const sendEmailExprt = async (user_id: string) => {
+
+ export const sendEmailExprt = async ( 
+  user_id: string,
+  to: string | string[],
+  subject: string,
+  html: string
+) => {
+  const info = await transporter.sendMail({
+    from: EMAIL_USER,
+    to,
+    subject,
+    html,
+  });
+
+  return info
+    
     
  }

@@ -6,6 +6,7 @@ import productRoutes from "./productRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
 import wishlistRoutes from "./wishlistRoutes.js";
 import addToCartRoutes from "./addToCartRoutes.js";
+import mailRoutes from "./mailRoutes.js";
 
 const app: Application = express();
 
@@ -15,5 +16,6 @@ app.use("/", productRoutes);
 app.use("/", categoryRoutes);
 app.use("/", wishlistRoutes);
 app.use("/", addToCartRoutes);
+app.use("/", mailRoutes);
 
 export default app; 

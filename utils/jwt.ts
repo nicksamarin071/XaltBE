@@ -1,5 +1,4 @@
 import jwt, { type VerifyErrors } from "jsonwebtoken";
-import type { SrvRecord } from "node:dns";
 
 // Interface for the payload data you want to include in the token
 // interface TokenPayload {
