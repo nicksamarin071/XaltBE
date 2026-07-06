@@ -7,11 +7,6 @@ import userModel from "../models/userModel.js";
 export const sendEmailController = async (req, res) => {
     try {
         const { email } = req.body;
-        if (!email) {
-            return resSend(res, 400, "Email is required", null);
-        }
-        console.log("🔥 EMAIL REQUEST BODY:", req.body);
-        console.log("🔥 TO FIELD:", req.body?.to);
         await sendEmail([process.env.EMAIL_USER,], "New Newsletter Subscriber", `<h2>New Newsletter Subscriber</h2>
        <p>Email: ${email}</p>
       `);
@@ -40,8 +35,6 @@ export const sendEmailConsultWithExpert = async (req, res) => {
         if (!user) {
             return resSend(res, 404, "User Not Found", null);
         }
-        console.log("🔥 EMAIL REQUEST BODY:", req.body);
-        console.log("🔥 TO FIELD:", req.body?.to);
         await sendEmailExprt(user_id, process.env.EMAIL_USER, "Consult With Expert Request", `
         <h2>Consult With Expert Request</h2>
         <p><strong>User ID:</strong> ${user_id}</p>
