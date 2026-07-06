@@ -1,27 +1,44 @@
 import nodemailer from "nodemailer";
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+const getConfig = () => ({
+    EMAIL_USER: process.env.EMAIL_USER,
+    EMAIL_PASS: process.env.EMAIL_PASS,
 });
 export const sendEmail = async (to, subject, html) => {
-    const info = await transporter.sendMail({
-        from: process.env.EMAIL_PASS,
+    const { EMAIL_USER, EMAIL_PASS } = getConfig();
+    if (!EMAIL_USER || !EMAIL_PASS) {
+        throw new Error("Missing email credentials");
+    }
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: EMAIL_USER,
+            pass: EMAIL_PASS,
+        },
+    });
+    return await transporter.sendMail({
+        from: EMAIL_USER,
         to,
         subject,
         html,
     });
-    return info;
 };
 export const sendEmailExprt = async (user_id, to, subject, html) => {
-    const info = await transporter.sendMail({
-        from: process.env.EMAIL_PASS,
+    const { EMAIL_USER, EMAIL_PASS } = getConfig();
+    if (!EMAIL_USER || !EMAIL_PASS) {
+        throw new Error("Missing email credentials");
+    }
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user: EMAIL_USER,
+            pass: EMAIL_PASS,
+        },
+    });
+    return await transporter.sendMail({
+        from: EMAIL_USER,
         to,
         subject,
         html,
     });
-    return info;
 };
 //# sourceMappingURL=mailService.js.map
