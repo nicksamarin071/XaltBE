@@ -15,10 +15,10 @@ export const AWS_S3_FOLDER = process.env.AWS_S3_FOLDER;
 export const EMAIL_USER = process.env.EMAIL_USER;
 export const EMAIL_PASS = process.env.EMAIL_PASS;
 // This is Constants Value of Products Cateogory =============
-export const newGear = "6a2272d24ef4f64ce50425d4";
+export const newGear = "6a19551af453dee9a589d923";
 export const rigsAndRacks = "6a227272739158cfd6295e50";
 export const crossfitEquipment = "6a2271fabf8b4a4816c236dc";
-export const barbells = "6a19551af453dee9a589d923";
+export const barbells = "6a2272d24ef4f64ce50425d4";
 export const plates = "6a19552cf453dee9a589d924";
 export const categoryToNameMapping = {
     [newGear]: 'near-gear',
