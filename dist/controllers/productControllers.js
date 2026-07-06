@@ -21,7 +21,7 @@ export const createProductController = async (req, res) => {
     }
     ;
     try {
-        const { productName, category_id, description, price, status, sku, brands, discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight } = req.body;
+        const { productName, category_id, description, price, status, sku, brands, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight } = req.body;
         const checkProduct = await productModel.findOne({ productName });
         if (checkProduct) {
             return resSend(res, 400, "Product already Exit!! Please Change ProductName", null);
@@ -62,7 +62,7 @@ export const createProductController = async (req, res) => {
             productName, category_id, description,
             image: uploadedImages,
             price, status, filters, sku, brands, feature_image: featureImage,
-            discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
+            gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
         });
         return resSend(res, 201, 'Product Created Successfully', productData);
     }
@@ -142,7 +142,7 @@ export const updateProductController = async (req, res) => {
             await deleteimageFromS3(product.feature_image);
             featureImageUrls = featureImageUrl;
         }
-        const { productName, description, price, status, filters, sku, brands, discount_price, gst_Percentage, gst_price, stock, is_new } = req.body;
+        const { productName, description, price, status, filters, sku, brands, gst_Percentage, gst_price, stock, is_new } = req.body;
         const checkProduct = await productModel.findOne({ productName });
         if (checkProduct) {
             return resSend(res, 400, "Product already Exit!! Please Change ProductName", null);
@@ -154,7 +154,7 @@ export const updateProductController = async (req, res) => {
             status,
             image: imageUrls,
             price, filters, sku, brands, feature_image: featureImageUrls,
-            discount_price, gst_Percentage, gst_price, stock, is_new
+            gst_Percentage, gst_price, stock, is_new
         };
         // Remove undefined fields
         Object.keys(updateData).forEach((key) => {

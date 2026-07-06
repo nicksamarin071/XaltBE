@@ -31,7 +31,7 @@ return resSend(res, 400, "Access denied. Only admin can perform this action.", n
 
 try {
   const {productName, category_id, description, price, status, sku, brands,
-          discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
+         gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
   } = req.body;
     
     const checkProduct = await productModel.findOne({productName});
@@ -82,7 +82,7 @@ const productData = await productModel.create({
       productName, category_id, description,      
       image: uploadedImages,
       price, status, filters, sku, brands, feature_image: featureImage,
-      discount_price, gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
+      gst_Percentage, gst_price, stock, is_new, service, logo_name, weight
 });
 
   return resSend( res, 201, 'Product Created Successfully', productData);
@@ -180,7 +180,7 @@ try {
     }
 
     const {productName, description, price, status, filters, sku, brands, 
-          discount_price, gst_Percentage, gst_price, stock, is_new} = req.body;
+           gst_Percentage, gst_price, stock, is_new} = req.body;
           
     const checkProduct = await productModel.findOne({productName});
     if(checkProduct){
@@ -192,7 +192,7 @@ try {
       status, 
       image: imageUrls,
       price, filters, sku, brands, feature_image: featureImageUrls,
-      discount_price, gst_Percentage, gst_price, stock, is_new
+      gst_Percentage, gst_price, stock, is_new
     };
 
     // Remove undefined fields
