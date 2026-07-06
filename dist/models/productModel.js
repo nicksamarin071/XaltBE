@@ -29,9 +29,6 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    discount_price: {
-        type: Number,
-    },
     gst_Percentage: {
         type: Number,
     },
