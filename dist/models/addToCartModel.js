@@ -31,6 +31,8 @@ const CartSchema = new Schema({
 }, {
     timestamps: true,
 });
-const Cart = mongoose.model("Cart", CartSchema);
+const Cart = mongoose.models.Cart ||
+    mongoose.model("Cart", CartSchema);
 export default Cart;
+// export default Cart;
 //# sourceMappingURL=addToCartModel.js.map
