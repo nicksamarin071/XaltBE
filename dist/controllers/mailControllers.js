@@ -4,6 +4,7 @@ import path from "path";
 import { resSend } from "../middlewares/response/resSend.js";
 import productModel from "../models/productModel.js";
 import userModel from "../models/userModel.js";
+import CartModel from "../models/addCartModel.js";
 export const sendEmailController = async (req, res) => {
     try {
         const { email } = req.body;
@@ -35,12 +36,19 @@ export const sendEmailConsultWithExpert = async (req, res) => {
         if (!user) {
             return resSend(res, 404, "User Not Found", null);
         }
+        const cart = await CartModel.findOne({ user_id: user_id });
+        const cartItem = cart?.items.find(item => item.product_id.toString() === product_id);
+        const quantity = cartItem?.quantity || 1;
+        const totalCost = (productDetails.price) * quantity;
         await sendEmailExprt(user_id, process.env.EMAIL_USER, "Consult With Expert Request", `
         <h2>Consult With Expert Request</h2>
         <p><strong>User ID:</strong> ${user_id}</p>
         <p><strong>Product ID:</strong> ${product_id}</p>
         <p><strong>Product Name:</strong> ${productDetails.productName}</p>
+        <p><strong>Product Price:</strong> ${productDetails.price}</p>
         <p><strong>User Email:</strong> ${user.email}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Total Cost:</strong> ₹${totalCost}</p>
       `);
         return resSend(res, 200, "Email sent successfully", null);
     }
