@@ -7,6 +7,9 @@ import { deleteimageFromS3 } from "../thirdPartyServices/configure.s3.js";
 import { uploadFeatureImageToS3, uploadImagesToS3 } from "../thirdPartyServices/uploadimages.s3.js";
 import { newGearFilters, rigsAndRacksFilters, crossfitEquipmentFilters, barbellsFilters, platesFilters } from "../utils/filters.js";
 import { newGear, rigsAndRacks, crossfitEquipment, barbells, plates } from "../utils/constants.js";
+import wishlistModel from "../models/wishlistModel.js";
+import addCartModel from "../models/addCartModel.js";
+import { calculateTotal } from "../utils/helper.js";
 const categoryFilterMap = {
     [newGear]: newGearFilters,
     [rigsAndRacks]: rigsAndRacksFilters,
@@ -192,7 +195,22 @@ export const deleteProductController = async (req, res) => {
         if (!product) {
             return resSend(res, 404, "Product not found", null);
         }
-        // Delete all product images from S3
+        // Delete related models
+        await wishlistModel.deleteMany({ product_id: id });
+        // Remove the deleted product from every cart
+        await addCartModel.updateMany({}, {
+            $pull: {
+                items: {
+                    product_id: product._id
+                }
+            }
+        });
+        // Recalculate cart totals
+        const carts = await addCartModel.find();
+        for (const cart of carts) {
+            cart.total_amount = calculateTotal(cart.items);
+            await cart.save();
+        } // Delete all product images from S3
         if (product.image) {
             await deleteimageFromS3(product.image);
         }
